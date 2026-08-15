@@ -335,8 +335,7 @@
         }
 
         function getRandomIndexWithWeights(cost) {
-            // Всегда выбираем индекс элемента «Пусто» (в нашем массиве он под индексом 1)
-            return 1;
+            return 1; // Всегда «Пусто»
         }
 
         let currentTrackGifts = [];
@@ -366,31 +365,32 @@
 
         initGifts();
 
-        // Функция запроса счета на оплату через Telegram Stars
-        function requestStarPayment(cost, callback) {
-            // В реальном приложении invoice link обычно запрашивается с вашего бэкенда.
-            // Здесь для демонстрации вызывается метод открытия инвойса по линку или через вызов бота.
-            // Для корректной работы бэкенд должен сгенерировать инвойс на star_pay_10 или star_pay_50.
-            
-            // Пример интеграции с методом openInvoice (если у вас есть invoiceLink):
-            /*
-            fetch('/api/create-invoice?cost=' + cost)
-                .then(res => res.json())
-                .then(data => {
-                    tg.openInvoice(data.invoiceLink, (status) => {
-                        if (status === 'paid') {
-                            callback(true);
-                        } else {
-                            callback(false);
-                        }
-                    });
-                });
-            */
+        // РЕАЛЬНЫЙ ЗАПРОС ОПЛАТЫ ЧЕРЕЗ СЕРВЕР И TELEGRAM STARS
+        async function requestStarPayment(cost, callback) {
+            try {
+                // Обращаемся к вашему бэкенду за ссылкой на оплату (invoice_link)
+                const response = await fetch(`/api/create-invoice?cost=${cost}&userId=${userId}`);
+                const data = await response.json();
 
-            // Заглушка для теста (если бэкенда нет, симулируем успешную оплату через 1 секунду):
-            setTimeout(() => {
-                callback(true); // Успешная оплата звезд
-            }, 1000);
+                if (!data.invoice_link) {
+                    alert("Ошибка создания счета от сервера");
+                    callback(false);
+                    return;
+                }
+
+                // Открываем нативное окно оплаты Telegram Stars
+                tg.openInvoice(data.invoice_link, (status) => {
+                    if (status === 'paid') {
+                        callback(true); // Оплата прошла успешно
+                    } else {
+                        callback(false); // Пользователь отменил оплату
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                alert("Не удалось связаться с сервером оплаты");
+                callback(false);
+            }
         }
 
         function startSpin(cost) {
@@ -400,9 +400,9 @@
             const activeBtn = cost === 10 ? spinBtn10 : spinBtn50;
             activeBtn.innerText = "Оплата...";
             resultMsg.innerText = ""; 
-            statusSubtitle.innerText = "Ожидайте оплаты...";
+            statusSubtitle.innerText = "Подготовка счета...";
 
-            // Запрашиваем оплату звездами перед круткой
+            // Запрашиваем реальное списание звезд перед запуском рулетки
             requestStarPayment(cost, (isPaid) => {
                 if (!isPaid) {
                     spinBtn10.disabled = false;
