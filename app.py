@@ -3,6 +3,10 @@ import asyncio
 from aiogram import Bot, Dispatcher, types, F
 from aiohttp import web
 from dotenv import load_dotenv
+from flask import Flask
+from flask_cors import CORS
+app = Flask(__name__)
+CORS(app)
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
