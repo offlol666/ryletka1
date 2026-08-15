@@ -7,9 +7,11 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
         body {
-            background-color: var(--tg-theme-bg-color, #ffffff);
-            color: var(--tg-theme-text-color, #000000);
+            /* Красивый градиентный фон */
+            background: linear-gradient(135deg, #1a1c2c 0%, #4a1942 100%);
+            color: #ffffff;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100vh; padding: 20px; text-align: center; overflow: hidden;
         }
@@ -17,80 +19,92 @@
         .container {
             width: 100%;
             max-width: 450px;
+            /* Эффект полупрозрачной карточки (стекло) */
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        h2 { margin-bottom: 5px; }
+        h2 { margin-bottom: 15px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
-        /* --- Окно рулетки --- */
+        /* Окно рулетки */
         .roulette-window {
             width: 100%;
-            height: 110px;
-            background-color: rgba(0, 0, 0, 0.05);
-            border-radius: 14px;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
             margin: 20px 0;
             position: relative;
             display: flex;
             align-items: center;
             overflow: hidden;
-            border: 2px solid var(--tg-theme-hint-color, #ccc);
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Стоп-линия (по центру) */
         .stop-line {
             position: absolute;
             left: 50%;
             top: 0;
             width: 4px;
             height: 100%;
-            background-color: rgba(255, 59, 48, 0.9);
+            background-color: #ff3b30;
+            box-shadow: 0 0 10px #ff3b30;
             transform: translateX(-50%);
             z-index: 10;
             border-radius: 2px;
-            pointer-events: none;
         }
 
-        /* Лента с подарками */
-        .gifts-track {
-            display: flex;
-            position: absolute;
-            left: 0;
-        }
+        .gifts-track { display: flex; position: absolute; left: 0; }
 
-        /* Элемент одного подарка (квадратная ячейка-картинка) */
         .gift-item {
-            width: 110px;  
-            height: 110px; 
-            display: flex;
-            justify-content: center;
+            width: 110px; 
+            height: 120px;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
             align-items: center;
             flex-shrink: 0;
-            border-right: 1px solid rgba(0,0,0,0.15);
-            padding: 6px;  
-            background-color: rgba(255, 255, 255, 0.5);
+            padding: 6px 4px; 
+            background: rgba(0, 0, 0, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
         }
 
-        /* Картинка на всю ячейку */
         .gift-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 70px; 
+            height: 70px;
+            object-fit: cover; 
             border-radius: 8px;
         }
 
-        /* --- Кнопка --- */
-        .btn {
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none; border-radius: 12px;
-            padding: 15px 30px; font-size: 18px; font-weight: bold;
-            cursor: pointer; transition: opacity 0.2s;
-            width: 100%;
+        .gift-item span {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ddd;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
-        .btn:active { opacity: 0.8; }
-        .btn:disabled { background-color: var(--tg-theme-hint-color); cursor: not-allowed; }
+
+        /* Кнопка */
+        .btn {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            color: #fff;
+            border: none; border-radius: 16px;
+            padding: 18px 30px; font-size: 18px; font-weight: bold;
+            cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(229, 46, 113, 0.4);
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn:disabled { background: #555; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -121,21 +135,20 @@
         const track = document.getElementById('gifts-track');
         const spinBtn = document.getElementById('spin-btn');
         
-        // --- ШАНСЫ ВЫПАДЕНИЯ (99.9% для "Пусто") ---
+        // --- ШАНСЫ ВЫПАДЕНИЯ ---
         const allGifts = [
             { id: 1, name: 'Подарок', img: 'https://github.com/offlol666/images/blob/main/ChatGPT%20Image%2015%20%D0%B0%D0%B2%D0%B3.%202026%20%D0%B3.,%2018_06_32.png?raw=true', weight: 0.2 },
             { id: 2, name: 'Пусто', img: 'https://github.com/offlol666/images/blob/main/nVfE3.jpg?raw=true', weight: 999 },
-            { id: 3, name: 'Мишка', img: 'https://github.com/offlol666/images/blob/main/F2OLW.jpg?raw=true', weight: 0.3 },
+            { id: 3, name: 'Мишка', img: 'https://github.com/offlol666/images/blob/main/ChatGPT%20Image%2015%20%D0%B0%D0%B2%D0%B3.%202026%20%D0%B3.,%2018_26_51.png?raw=true', weight: 0.3 },
             { id: 4, name: 'Секрет', img: 'https://github.com/offlol666/images/blob/main/CAgfA.jpg?raw=true', weight: 0.3 },
             { id: 5, name: 'Кубок', img: 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', weight: 0.1 },
-            { id: 6, name: 'Монета', img: 'https://cdn-icons-png.flaticon.com/512/1384/1384047.png', weight: 0.1 }
+            { id: 6, name: '1 Звезда', img: 'https://github.com/offlol666/images/blob/main/OIP.webp?raw=true', weight: 0.1 }
         ];
 
         const ITEM_WIDTH = 110; 
-        const REPEATS = 8;        // Увеличено число циклов для более долгого кручения
-        const ANIMATION_TIME = 6000; // Увеличено время до 6 секунд
+        const REPEATS = 8;        
+        const ANIMATION_TIME = 6000; 
 
-        // Функция случайного перемешивания массива (Fisher-Yates shuffle)
         function shuffleArray(array) {
             const arr = [...array];
             for (let i = arr.length - 1; i > 0; i--) {
@@ -172,7 +185,10 @@
             currentTrackGifts.forEach(gift => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'gift-item';
-                itemDiv.innerHTML = `<img src="${gift.img}" alt="${gift.name}">`;
+                itemDiv.innerHTML = `
+                    <img src="${gift.img}" alt="${gift.name}">
+                    <span>${gift.name}</span>
+                `;
                 track.appendChild(itemDiv);
             });
 
@@ -206,13 +222,11 @@
 
             const containerCenter = (document.querySelector('.roulette-window').offsetWidth / 2) - (ITEM_WIDTH / 2);
             
-            // Смещение ближе к правому или левому краю ячейки
             const side = Math.random() < 0.5 ? 1 : -1;
             const randomShift = (35 + Math.random() * 13) * side;
 
             const finalOffset = -(targetIndex * ITEM_WIDTH - containerCenter + randomShift);
 
-            // Плавность: долгий разгон в начале и мягкое затухание в конце
             track.style.transition = `transform ${ANIMATION_TIME}ms cubic-bezier(0.15, 0.85, 0.1, 1)`;
             track.style.transform = `translateX(${finalOffset}px)`;
 
