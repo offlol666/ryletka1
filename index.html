@@ -369,7 +369,7 @@
         async function requestStarPayment(cost, callback) {
             try {
                 // Обращаемся к вашему бэкенду за ссылкой на оплату (invoice_link)
-                const response = await fetch(`/api/create-invoice?cost=${cost}&userId=${userId}`);
+                const response = await fetch(`https://ryletka1.onrender.com/api/create-invoice?cost=${cost}&userId=${userId}`);
                 const data = await response.json();
 
                 if (!data.invoice_link) {
