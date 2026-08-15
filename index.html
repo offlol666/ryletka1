@@ -9,7 +9,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
         body {
-            /* Красивый градиентный фон */
             background: linear-gradient(135deg, #1a1c2c 0%, #4a1942 100%);
             color: #ffffff;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -19,7 +18,6 @@
         .container {
             width: 100%;
             max-width: 450px;
-            /* Эффект полупрозрачной карточки (стекло) */
             background: rgba(255, 255, 255, 0.05);
             padding: 25px;
             border-radius: 24px;
@@ -30,15 +28,22 @@
             align-items: center;
         }
 
-        h2 { margin-bottom: 15px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        h2 { margin-bottom: 5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+        #status-subtitle {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 15px;
+            min-height: 20px;
+        }
         
         /* Окно рулетки */
         .roulette-window {
             width: 100%;
-            height: 120px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            margin: 20px 0;
+            height: 140px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            margin: 10px 0 20px 0;
             position: relative;
             display: flex;
             align-items: center;
@@ -59,59 +64,182 @@
             border-radius: 2px;
         }
 
-        .gifts-track { display: flex; position: absolute; left: 0; }
+        .gifts-track { display: flex; position: absolute; left: 0; align-items: center; }
 
+        /* Карточка предмета */
         .gift-item {
-            width: 110px; 
-            height: 120px;
+            width: 104px; 
+            height: 124px;
             display: flex; 
             flex-direction: column;
-            justify-content: center; 
+            justify-content: space-between; 
             align-items: center;
             flex-shrink: 0;
-            padding: 6px 4px; 
-            background: rgba(0, 0, 0, 0.1);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
+            padding: 8px 6px; 
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            margin: 0 4px;
         }
 
         .gift-item img {
-            width: 70px; 
-            height: 70px;
-            object-fit: cover; 
-            border-radius: 8px;
+            width: 90px; 
+            height: 90px;
+            object-fit: contain; 
+            margin-top: 2px;
         }
 
         .gift-item span {
             font-size: 11px;
             font-weight: 600;
-            color: #ddd;
-            margin-top: 5px;
+            color: #d1d1d6;
+            text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 100%;
+            width: 100%;
         }
 
-        /* Кнопка */
+        #result-message {
+            margin: 10px 0;
+            font-size: 16px;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .btn-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .btn {
             background: linear-gradient(90deg, #ff8a00, #e52e71);
             color: #fff;
             border: none; border-radius: 16px;
-            padding: 18px 30px; font-size: 18px; font-weight: bold;
+            padding: 16px 15px; font-size: 16px; font-weight: bold;
             cursor: pointer; transition: transform 0.2s, opacity 0.2s;
             width: 100%;
             box-shadow: 0 4px 15px rgba(229, 46, 113, 0.4);
         }
         .btn:active { transform: scale(0.95); }
         .btn:disabled { background: #555; opacity: 0.6; }
+
+        .btn-hint {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            font-size: 16px;
+            padding: 14px 30px;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+
+        .buttons-row-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: rgba(26, 28, 44, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .modal-header h3 { font-size: 20px; color: #fff; }
+
+        .inventory-list {
+            overflow-y: auto;
+            max-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 5px;
+        }
+
+        .inventory-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 14px;
+            border-radius: 14px;
+            gap: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .inventory-item img {
+            width: 45px; height: 45px; object-fit: cover; border-radius: 8px;
+        }
+
+        .inventory-empty {
+            text-align: center;
+            color: #aaa;
+            padding: 40px 0;
+            font-size: 16px;
+        }
+
+        .close-modal-btn {
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h2>🎁 Крутилка подарков</h2>
-        <p id="user-greeting" style="color: var(--tg-theme-hint-color);">Загрузка...</p>
+        <div id="status-subtitle">Ваш шанс выиграть приз: Загрузка...</div>
 
         <!-- Окно рулетки -->
         <div class="roulette-window">
@@ -119,7 +247,36 @@
             <div class="gifts-track" id="gifts-track"></div>
         </div>
 
-        <button class="btn" id="spin-btn" onclick="startSpin()">Крутить за 50 ⭐</button>
+        <!-- Текст результата -->
+        <div id="result-message"></div>
+
+        <div class="buttons-row-wrapper">
+            <div class="buttons-group">
+                <div class="btn-wrapper">
+                    <button class="btn" id="spin-btn-10" onclick="startSpin(10)">Крутить за 10 ⭐</button>
+                    <div class="btn-hint">Обычные шансы</div>
+                </div>
+                <div class="btn-wrapper">
+                    <button class="btn" id="spin-btn-50" onclick="startSpin(50)">Крутить за 50 ⭐</button>
+                    <div class="btn-hint">Увеличение шансы</div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="openInventory()">📦 Инвентарь</button>
+    </div>
+
+    <!-- Модальное окно инвентаря -->
+    <div class="modal" id="inventory-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📦 Инвентарь</h3>
+            </div>
+            <div class="inventory-list" id="inventory-list">
+                <!-- Сюда динамически добавляются призы -->
+            </div>
+            <button class="close-modal-btn" onclick="closeInventory()">Закрыть</button>
+        </div>
     </div>
 
     <script>
@@ -128,24 +285,54 @@
         tg.expand();
 
         const user = tg.initDataUnsafe?.user;
+        const userId = user ? user.id : 'guest_' + Math.random();
+        
         if (user) {
-            document.getElementById('user-greeting').innerText = `Привет, ${user.first_name}! Испытай удачу.`;
+            document.querySelector('h2').innerText = `🎁 Привет, ${user.first_name}!`;
         }
 
+        // Генерация индивидуального шанса для каждого пользователя от -15 до +5 от числа 75 (то есть от 60 до 80)
+        function getUserWinChance(id) {
+            let hash = 0;
+            const strId = String(id);
+            for (let i = 0; i < strId.length; i++) {
+                hash = (hash << 5) - hash + strId.charCodeAt(i);
+                hash |= 0;
+            }
+            // Диапазон от -15 до +5 включительно
+            const randomDelta = (Math.abs(hash) % 21) - 15; 
+            return 75 + randomDelta;
+        }
+
+        const finalWinChance = getUserWinChance(userId);
+
+        const statusSubtitle = document.getElementById('status-subtitle');
+        statusSubtitle.innerText = `Ваш шанс выиграть приз: ${finalWinChance}%`;
+
         const track = document.getElementById('gifts-track');
-        const spinBtn = document.getElementById('spin-btn');
+        const spinBtn10 = document.getElementById('spin-btn-10');
+        const spinBtn50 = document.getElementById('spin-btn-50');
+        const resultMsg = document.getElementById('result-message');
         
-        // --- ШАНСЫ ВЫПАДЕНИЯ ---
+        const inventoryModal = document.getElementById('inventory-modal');
+        const inventoryList = document.getElementById('inventory-list');
+
+        let inventory = [];
+
+        // Распределение шансов на основе рассчитанного процента победы (finalWinChance)
+        const loseChance = 100 - finalWinChance;
+        const winItemChance = finalWinChance / 5; // Делим выигрышный процент на 5 реальных призов
+
         const allGifts = [
-            { id: 1, name: 'Подарок', img: 'https://github.com/offlol666/images/blob/main/ChatGPT%20Image%2015%20%D0%B0%D0%B2%D0%B3.%202026%20%D0%B3.,%2018_06_32.png?raw=true', weight: 0.2 },
-            { id: 2, name: 'Пусто', img: 'https://github.com/offlol666/images/blob/main/nVfE3.jpg?raw=true', weight: 999 },
-            { id: 3, name: 'Мишка', img: 'https://github.com/offlol666/images/blob/main/ChatGPT%20Image%2015%20%D0%B0%D0%B2%D0%B3.%202026%20%D0%B3.,%2018_26_51.png?raw=true', weight: 0.3 },
-            { id: 4, name: 'Секрет', img: 'https://github.com/offlol666/images/blob/main/CAgfA.jpg?raw=true', weight: 0.3 },
-            { id: 5, name: 'Кубок', img: 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', weight: 0.1 },
-            { id: 6, name: '1 Звезда', img: 'https://github.com/offlol666/images/blob/main/OIP.webp?raw=true', weight: 0.1 }
+            { id: 1, name: 'Подарок', img: 'https://github.com/offlol666/images/blob/main/%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BE%D0%BA.png?raw=true', weight: winItemChance },
+            { id: 2, name: 'Пусто', img: 'https://github.com/offlol666/images/blob/main/%D0%BF%D1%83%D1%81%D1%82%D0%BE.png?raw=true', weight: loseChance },
+            { id: 3, name: 'Мишка', img: 'https://github.com/offlol666/images/blob/main/%D0%BC%D0%B5%D0%B4%D0%B2%D0%B5%D0%B4%D1%8C.png?raw=true', weight: winItemChance },
+            { id: 4, name: 'Секрет', img: 'https://github.com/offlol666/images/blob/main/%D1%81%D1%83%D0%BC%D0%BA%D0%B0.png?raw=true', weight: winItemChance },
+            { id: 5, name: 'Кубок', img: 'https://cdn-icons-png.flaticon.com/512/3112/3112946.png', weight: winItemChance },
+            { id: 6, name: '10 Звезд', img: 'https://github.com/offlol666/images/blob/main/%D0%B7%D0%B2%D0%B5%D0%B7%D0%B4%D1%8B.png?raw=true', weight: winItemChance }
         ];
 
-        const ITEM_WIDTH = 110; 
+        const ITEM_WIDTH = 112; 
         const REPEATS = 8;        
         const ANIMATION_TIME = 6000; 
 
@@ -158,15 +345,24 @@
             return arr;
         }
 
-        function getRandomIndexWithWeights() {
-            const totalWeight = allGifts.reduce((sum, gift) => sum + gift.weight, 0);
+        function getRandomIndexWithWeights(cost) {
+            let activeGifts = allGifts;
+            if (cost === 50) {
+                // Если кнопка за 50 ⭐, можно сделать шансы еще лучше (например, убрать «Пусто» или увеличить призы)
+                activeGifts = allGifts.map(gift => ({
+                    ...gift,
+                    weight: gift.name === 'Пусто' ? 1 : gift.weight * 5
+                }));
+            }
+
+            const totalWeight = activeGifts.reduce((sum, gift) => sum + gift.weight, 0);
             let randomNum = Math.random() * totalWeight;
             
-            for (let i = 0; i < allGifts.length; i++) {
-                if (randomNum < allGifts[i].weight) {
+            for (let i = 0; i < activeGifts.length; i++) {
+                if (randomNum < activeGifts[i].weight) {
                     return i;
                 }
-                randomNum -= allGifts[i].weight;
+                randomNum -= activeGifts[i].weight;
             }
             return 0;
         }
@@ -198,13 +394,19 @@
 
         initGifts();
 
-        function startSpin() {
-            spinBtn.disabled = true;
-            spinBtn.innerText = "Крутим...";
+        function startSpin(cost) {
+            spinBtn10.disabled = true;
+            spinBtn50.disabled = true;
+            
+            const activeBtn = cost === 10 ? spinBtn10 : spinBtn50;
+            activeBtn.innerText = "Крутим...";
+            resultMsg.innerText = ""; 
+
+            statusSubtitle.innerText = "Ожидайте...";
 
             initGifts(); 
             
-            const winningIndexOriginal = getRandomIndexWithWeights();
+            const winningIndexOriginal = getRandomIndexWithWeights(cost);
             const winningGift = allGifts[winningIndexOriginal];
 
             const targetCycle = REPEATS - 1; 
@@ -221,9 +423,8 @@
             }
 
             const containerCenter = (document.querySelector('.roulette-window').offsetWidth / 2) - (ITEM_WIDTH / 2);
-            
             const side = Math.random() < 0.5 ? 1 : -1;
-            const randomShift = (35 + Math.random() * 13) * side;
+            const randomShift = (30 + Math.random() * 15) * side;
 
             const finalOffset = -(targetIndex * ITEM_WIDTH - containerCenter + randomShift);
 
@@ -234,11 +435,51 @@
                 track.style.transition = 'none';
                 track.style.transform = `translateX(${finalOffset}px)`;
 
-                spinBtn.disabled = false;
-                spinBtn.innerText = "Крутить за 50 ⭐";
+                spinBtn10.disabled = false;
+                spinBtn50.disabled = false;
+                spinBtn10.innerText = "Крутить за 10 ⭐";
+                spinBtn50.innerText = "Крутить за 50 ⭐";
                 
-                alert(`🎉 Поздравляем! Вы выиграли: ${winningGift.name}`);
+                statusSubtitle.innerText = `Ваш шанс выиграть приз: ${finalWinChance}%`;
+
+                if (winningGift.name === 'Пусто') {
+                    resultMsg.innerHTML = `<span style="color: #ff6b6b;">😔 Повезет в следующий раз!</span>`;
+                } else {
+                    resultMsg.innerHTML = `<span style="color: #4cd137;">🎉 Поздравляем! Ваш приз: ${winningGift.name}</span>`;
+                    inventory.push({ name: winningGift.name, img: winningGift.img });
+                }
             }, ANIMATION_TIME);
+        }
+
+        function openInventory() {
+            renderInventory();
+            inventoryModal.style.display = 'flex';
+        }
+
+        function closeInventory() {
+            inventoryModal.style.display = 'none';
+        }
+
+        function renderInventory() {
+            inventoryList.innerHTML = '';
+
+            if (inventory.length === 0) {
+                inventoryList.innerHTML = `<div class="inventory-empty">Инвентарь пуст</div>`;
+                return;
+            }
+
+            inventory.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'inventory-item';
+                itemDiv.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div style="text-align: left; flex-grow: 1;">
+                        <div style="font-weight: 600; font-size: 14px;">${item.name}</div>
+                        <div style="font-size: 11px; color: #aaa;">Предмет #${index + 1}</div>
+                    </div>
+                `;
+                inventoryList.appendChild(itemDiv);
+            });
         }
     </script>
 </body>
