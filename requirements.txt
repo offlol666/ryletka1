@@ -2,5 +2,5 @@ aiogram
 aiohttp
 python-dotenv
 flask
-flask-core
+flask-cors
 requests
