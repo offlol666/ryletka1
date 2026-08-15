@@ -1,8 +1,15 @@
-from aiogram import Bot, Dispatcher, types
+import os
+import asyncio
+from aiogram import Bot, Dispatcher, types, F
 from aiohttp import web
+from dotenv import load_dotenv
+
+# Загружаем токен из файла .env
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Инициализируем бота и диспетчер
-bot = Bot(token="8939932604:AAFIcBBtLsia7D956VBYQXV1z4o7kPDDDWw")
+bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
 # 1. Обработчик запроса от вашего WebApp
@@ -25,7 +32,7 @@ async def create_invoice_handler(request):
 async def pre_checkout_handler(pre_checkout_query: types.PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
-# 3. Обработчик успешного платежа (чтобы зафиксировать оплату, если нужно)
+# 3. Обработчик успешного платежа
 @dp.message(F.successful_payment)
 async def success_payment_handler(message: types.Message):
     await message.answer("Спасибо за оплату! Удачи в рулетке 🎲")
@@ -36,7 +43,7 @@ async def main():
     # Регистрируем тот самый путь, который запрашивает WebApp в fetch()
     app.router.add_get('/api/create-invoice', create_invoice_handler)
     
-    # Запускаем веб-сервер на порту 8080 (или другом нужном)
+    # Запускаем веб-сервер на порту 8080
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 8080)
@@ -47,5 +54,4 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    import asyncio
     asyncio.run(main())
